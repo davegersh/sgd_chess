@@ -9,15 +9,9 @@ from sdg_hub.core.flow import Flow
 # Configure Model and APIs
 load_dotenv()  # reads the .env file
 
-# MODEL = "openai/llama-3.3-70b-versatile"
-MODEL = "openai/llama-3.1-8b-instant"  # really only works with this model!
+MODEL = "openai/llama-3.1-8b-instant"
 API_BASE = "https://api.groq.com/openai/v1"
 API_KEY = os.getenv("GROQ_API_KEY")
-
-# Uncomment to use ollama instead!
-# MODEL = "openai/llama3.2:1b"
-# API_BASE = "http://localhost:11434/v1"
-# API_KEY = "ollama"
 
 # Load seed data and custom flow
 dataset = Dataset.from_csv("chess_openings.csv")
