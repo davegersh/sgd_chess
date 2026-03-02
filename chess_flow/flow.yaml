@@ -1,0 +1,86 @@
+metadata:
+  name: Chess Openings Q&A Generation Flow
+  description: Generates Q&A pairs from chess opening documents.
+  version: 1.0.0
+  tags:
+    - chess
+    - qa
+    - eval
+  id: short-valley-524
+blocks:
+  - block_type: PromptBuilderBlock
+    block_config:
+      block_name: build_qa_prompt
+      input_cols:
+        - name
+        - document
+      output_cols: qa_prompt
+      prompt_config_path: prompts/qa_gen.yaml
+      format_as_messages: true
+  - block_type: LLMChatBlock
+    block_config:
+      block_name: generate_qa
+      input_cols: qa_prompt
+      output_cols: raw_qa
+      max_tokens: 256
+      temperature: 0.7
+      n: 1
+      async_mode: true
+  - block_type: LLMResponseExtractorBlock
+    block_config:
+      block_name: extract_qa
+      input_cols: raw_qa
+      extract_content: true
+      expand_lists: false
+  - block_type: TagParserBlock
+    block_config:
+      block_name: parse_question
+      input_cols: extract_qa_content
+      output_cols: question
+      start_tags:
+        - "[QUESTION]"
+      end_tags:
+        - "[ANSWER]"
+  - block_type: TagParserBlock
+    block_config:
+      block_name: parse_answer
+      input_cols: extract_qa_content
+      output_cols: answer
+      start_tags:
+        - "[ANSWER]"
+      end_tags:
+        - ""
+  - block_type: PromptBuilderBlock
+    block_config:
+      block_name: build_eval_prompt
+      input_cols:
+        - document
+        - answer
+        - question
+      output_cols: eval_prompt
+      prompt_config_path: prompts/eval.yaml
+      format_as_messages: true
+  - block_type: LLMChatBlock
+    block_config:
+      block_name: generate_eval
+      input_cols: eval_prompt
+      output_cols: raw_eval
+      max_tokens: 128
+      temperature: 0.7
+      n: 1
+      async_mode: true
+  - block_type: LLMResponseExtractorBlock
+    block_config:
+      block_name: extract_eval
+      input_cols: raw_eval
+      extract_content: true
+      expand_lists: false
+  - block_type: TagParserBlock
+    block_config:
+      block_name: parse_eval
+      input_cols: extract_eval_content
+      output_cols: eval
+      start_tags:
+        - "[FINAL RATING]"
+      end_tags:
+        - "[END]"

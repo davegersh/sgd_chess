@@ -1,0 +1,18 @@
+---
+- role: system
+  content: You are an expert chess coach creating study material for intermediate players.
+- role: user
+  content: |
+    Generate one question and answer pair for the following chess opening.
+    The question should focus on the strategic WHY behind the moves, not just listing them.
+    Meanwhile, the answer should list the next move and its advantages and disadvantages for black / white.
+
+    Strictly follow this format:
+    [QUESTION]
+    <Insert question here>
+    [ANSWER]
+    <Insert answer here>
+
+    Here's a description of the {{name}} opening:
+    [DOCUMENT]
+    {{document}}
