@@ -15,18 +15,18 @@ The pipeline:
 4. The same LLM also rates the Q&A pair from 1-10.
 4. Results are saved to `chess_openings_qa.jsonl`
 
-# Running
+## Running
 
-## Dependencies
+### Dependencies
 - Make sure you have installed [uv](https://docs.astral.sh/uv/getting-started/installation/).
 - Local ollama instance or cloud inference (like Groq) API key.
 
-## Setting up
+### Setting up
 To run the pipeline, you'll need to setup the LLM you are going to use. 
-The first lines in `main.py` set up the model and API key so feel free to modify them to fit your needs.
+In `main.py`, after the flow is created, feel free to modify the `set_model_config` arguments to fit your needs.
+By default, it's using a the Groq API.
 
-## Run the pipeline
-To run the following command:
+### Run the pipeline
 ```
 uv run python main.py
 ```
