@@ -33,6 +33,16 @@ uv run python main.py
 
 Q&A pairs are saved to `chess_openings_qa.jsonl` as they are generated. If the script crashes midway, already-saved pairs are not lost.
 
+### Resilience Features
+
+The pipeline includes several features to make it more robust:
+
+- **Retry logic** - Failed API calls automatically retry with exponential backoff (up to 3 attempts)
+- **Progress tracking** - Completed items are saved to `progress.json`; the script can resume from crashes
+- **Quality filtering** - Q&A pairs with eval scores below 5.0 are automatically skipped
+- **Validation** - Empty or malformed responses trigger retries
+- **Verbose logging** - Detailed progress logging for monitoring
+
 
 ### Project files
 
@@ -52,6 +62,8 @@ This project was fully focused on learning the ins and outs of how Red Hat's `sd
 This was a project that involved extensive conversation with Claude (Sonnet 4.6). It was an interesting experience that was very much a "move fast, break things" approach. With heavy enphasis on the "break things" part. When Claude worked, it worked really well and it was fantastic for getting a simple script working and having a foundation to work with. It was only until I had asked for more details about `sdg_hub` that I think it struggled a bit. For example, at one point it mentioned a "known bug" existed in flow creation with `sdg_hub`. When prompted for it's source, it mentioned that it "made it up." I believe that the AI usage was at it's best when I took the reigns and asked accessory or supportive questions rather than generating too much all at once. Although this may be a sign that I'm due to work on improving my prompting skills.
 
 Claude also helped generate the set of 55 openings and their descriptions.
+
+For the resilience improvements (retry logic, progress tracking, quality filtering), I used [OpenCode](https://opencode.ai) — an open source AI coding agent that works directly in the local codebase with free built-in models.
 
 ### What Worked
 The built-in `sdg_hub` flows worked reliably out of the box. The `FlowRegistry` pattern for discovering and loading pre-built flows is clean and well-designed. Pointing it at any OpenAI-compatible endpoint is straightforward.
@@ -81,7 +93,7 @@ Local LLM inference.
 ## Next Steps
 Add fine-tuning with `training_hub`. The natural next step is to feed the generated Q&A pairs into Red Hat's `training_hub` to fine-tune a small model and demonstrate a measurable improvement in chess opening reasoning with a before/after comparison.
 
-Add the ability to eliminate low-scoring Q&A pairs and improve the eval prompt. Currently, it generates a single number, however, other evaluation methods could work better. Eliminating low-scoring Q&A pairs should be as simple as adding a filter block to the flow.
+Add the ability to eliminate low-scoring Q&A pairs and improve the eval prompt. Currently, it generates a single number, however, other evaluation methods could work better. ~~Eliminating low-scoring Q&A pairs should be as simple as adding a filter block to the flow.~~ (Done - low-scoring pairs are now filtered with a configurable threshold.)
 
 Support multiple Q&A pairs per opening. Currently the flow generates one Q&A pair per opening document. Running the flow multiple times per document with different temperature settings or prompt variations would produce a richer, more diverse dataset with better eval scores.
 
